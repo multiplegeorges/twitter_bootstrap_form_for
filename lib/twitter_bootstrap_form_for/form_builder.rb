@@ -48,10 +48,12 @@ class TwitterBootstrapFormFor::FormBuilder < ActionView::Helpers::FormBuilder
   #
   def label(attribute, text = '', options = {}, &block)
     text, attribute = attribute, nil if attribute.kind_of? String
-
+    fields = options.delete(:fields)
     options = { :class => 'control-label' }.merge(options)
-    id      = _wrapper_id      attribute, 'control_group'
-    classes = _wrapper_classes attribute, 'control-group'
+    id = _wrapper_id(attribute, 'control_group')
+    
+    field_with_error = fields.find{|f| errors_on? f } if fields.kind_of? Array
+    classes = _wrapper_classes(field_with_error || attribute, 'control-group')
 
     template.content_tag(:div, :id => id, :class => classes) do
       template.concat case
